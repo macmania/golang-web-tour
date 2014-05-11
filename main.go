@@ -26,7 +26,7 @@ func ryanneHandler(w http.ResponseWriter, req *http.Request) {
       buf, _ := json.Marshal(&ryanne)
       w.Write(buf)
 
-    //curl -v -H "Content-Type: application/json" -X PUT --data "stuff.json" http://localhost:8003/ryanne
+    //curl -v -H "Content-Type: application/json" -X PUT --data @stuff.json http://localhost:8003/ryanne
     //this uploads the stuff.json, this curl method checks whether it had upload it successfully 
     case "PUT":
       buf, _ := ioutil.ReadAll(req.Body)
