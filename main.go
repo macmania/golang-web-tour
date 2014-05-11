@@ -1,5 +1,5 @@
 /**
-* Playing around with using Go as a server back-end service for API services
+* Playing around with using Go as a server back-end service for API services on the data-model ryanne
 */
 
 package main
@@ -27,7 +27,7 @@ func ryanneHandler(w http.ResponseWriter, req *http.Request) {
       w.Write(buf)
 
     //curl -v -H "Content-Type: application/json" -X PUT --data "stuff.json" http://localhost:8003/ryanne
-    //this uploads
+    //this uploads the stuff.json, this curl method checks whether it had upload it successfully 
     case "PUT":
       buf, _ := ioutil.ReadAll(req.Body)
       err := json.Unmarshal(buf, &ryanne)
@@ -35,7 +35,12 @@ func ryanneHandler(w http.ResponseWriter, req *http.Request) {
         fmt.Println("error: ", err)
       }
       fmt.Printf("%s %d", ryanne.Name, ryanne.Age)
-
+    case "DELETE": 
+      buf, _ := ioutil.ReadAll(req.Body)
+      err := json.Unmarshal(buf, &ryanne)
+    
+    case: "POST":
+      //to-do stub
     default:
       w.WriteHeader(400)
   }
