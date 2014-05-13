@@ -41,7 +41,7 @@ func peopleHandler(w http.ResponseWriter, req *http.Request) {
     case "PUT":
       buf, _ := ioutil.ReadAll(req.Body)
       err := json.Unmarshal(buf, &personTemp)
-      if printErr (&err) == 1{
+      if err != nil{
         fmt.Printf("%s %d", personTemp.Name, personTemp.Age)
 
     }
@@ -49,7 +49,7 @@ func peopleHandler(w http.ResponseWriter, req *http.Request) {
     case "DELETE":
       buf, _ := ioutil.ReadAll(req.Body)
       err := json.Unmarshal(buf, &personTemp)
-      printErr (&err)
+      printErr (err)
 
 
     case "POST":
@@ -62,53 +62,62 @@ func peopleHandler(w http.ResponseWriter, req *http.Request) {
 
 //Handles each specific person that is in the peopleHandler
 func personHandler(w http.ResponseWriter, req *http.Request){
-
+    fmt.Print("HERE")
     exists := isPersonExists(req.URL.Path[1:])
-    person := req.URL.Path[1:]
+    var person string
+    person = req.URL.Path[1:]
     switch req.Method{
       case "GET":
-
         if exists {
-          buf, _ := json.Marshal(&personTemp)
+          buf, _ := json.Marshal(manager.peopleManager[person])
           w.Write(buf)
-        }
-        else {
-          w.Write("couldn't find ", person)
+        }else {
+          //w.Write("couldn't find")
+          fmt.Print("Cannot find the person")
         }
 
       case "PUT":
-        if exists {
-          buf, err := json.Unmarshal(buf, manager[&person])
-        }
-        printErr (&err)
+          /*Need to test if this is ok*/
+        //if exists {
+          buf, _ := ioutil.ReadAll(req.Body)
+          err := json.Unmarshal(buf, manager.peopleManager[person])
+          printErr(err)
+        //}
+/*        else { //creates a new person and add to the manager map
+          manager[&person]
+        }*/
+
       case "DELETE":
         if exists {
           //delete the resource off the server
         }
 
+      //Post appends and updates a resource
       case "POST":
-        if !exists {
-          //
+        buf, _ := ioutil.ReadAll(req.Body)
+        if exists {
+          err := json.Unmarshal(buf, manager.peopleManager[person])
+          printErr(err)
+        } else {
+          fmt.Print("Cannot find the person")
         }
 
       default:
         w.WriteHeader(400) //not found code
 
+    }
 }
 
-func printErr (err *string) error{
-  if &err != nil{
-    fmt.Println("error: ", &err)
-    return nil
+func printErr (err error){
+  if err != nil {
+    fmt.Println("error: ", err)
   }
-  else return 1
 }
 
-func isPersonExists(person *string) error boolean {
-  if val, ok := manager[&person]; ok {
+func isPersonExists(person string) (isExists bool) {
+  if _, ok := manager.peopleManager[person]; ok {
     return true
-  }
-  else {
+  } else {
     return false
   }
 }
