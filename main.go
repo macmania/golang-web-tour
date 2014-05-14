@@ -11,7 +11,17 @@ import (
   "io/ioutil"
   "encoding/json"
   "fmt"
+  "html/template"
+  "log"
+  "mux"
 )
+
+type Context struct {
+    Title  string
+    Static string
+}
+
+const STATIC_URL = "/"
 
 //data model for each particular person to be saved in the map
 type Person struct {
@@ -21,6 +31,7 @@ type Person struct {
   Password string
   EmailAddress string
 }
+
 var personTemp Person
 var manager PeopleManager
 
@@ -118,10 +129,37 @@ func isPersonExists(person string) (isExists bool) {
     return false
   }
 }
+/*******HTML templating*******/
+func Index(w http.ResponseWriter, req *http.Request){
+  context := Context{Title: "Index"}
+  render(w, "index.html", context)
+}
 
+
+//all credits go to http://www.reinbach.com/golang-webapps-1.html
+func render(w http.ResponseWriter, tmpl string, context Context) {
+    context.Static = STATIC_URL
+    //not working right now, still need to fix the memory location for this portion
+    //here
+    tmpl_list := []string{"index.html",
+        fmt.Sprintf("%s.html", tmpl)}
+    t, err := template.ParseFiles(tmpl_list...)
+    if err != nil {
+        log.Print("template parsing error: ", err)
+    }
+    err = t.Execute(w, context)
+    if err != nil {
+        log.Print("template executing error: ", err)
+    }
+}
+
+
+
+/*******HTML templating*******/
 func main() {
 
   //starting variables
+  r := mux.NewRouter()
   manager.peopleManager = make(map[string]*Person)
   //personTemp.UserName = ""
   /**
@@ -144,9 +182,16 @@ func main() {
 
   manager.peopleManager["jojofabe123"] = person1
   http.HandleFunc("/people", peopleHandler)
+  http.HandleFunc("/", Index)
+
+  //need to know how to handle this case here
+  http.HandleFunc("/:username", personHandler)
+=======
+  r.HandleFunc("/people", peopleHandler)
 
   //need to know how to handle this case here
   http.HandleFunc("/{people:string}", personHandler)
+  r.HandleFunc("/{UserName}", personHandler)
 
   http.ListenAndServe(":8003", nil)
 }
