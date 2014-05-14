@@ -12,8 +12,12 @@ import (
   "encoding/json"
   "fmt"
 <<<<<<< HEAD
+<<<<<<< HEAD
   "html/template"
   "log"
+=======
+  "mux"
+>>>>>>> fc45cd4575a07b6813f9dc019c48cd3fbf74b1f8
 =======
   "mux"
 >>>>>>> fc45cd4575a07b6813f9dc019c48cd3fbf74b1f8
@@ -185,16 +189,22 @@ func main() {
 
   manager.peopleManager["jojofabe123"] = person1
 <<<<<<< HEAD
+<<<<<<< HEAD
   http.HandleFunc("/people", peopleHandler)
   http.HandleFunc("/", Index)
 
   //need to know how to handle this case here
   http.HandleFunc("/:username", personHandler)
 =======
+=======
+>>>>>>> fc45cd4575a07b6813f9dc019c48cd3fbf74b1f8
   r.HandleFunc("/people", peopleHandler)
 
   //need to know how to handle this case here
   r.HandleFunc("/{UserName}", personHandler)
+<<<<<<< HEAD
+>>>>>>> fc45cd4575a07b6813f9dc019c48cd3fbf74b1f8
+=======
 >>>>>>> fc45cd4575a07b6813f9dc019c48cd3fbf74b1f8
 
   http.ListenAndServe(":8003", nil)
