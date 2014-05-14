@@ -11,6 +11,7 @@ import (
   "io/ioutil"
   "encoding/json"
   "fmt"
+  "mux"
 )
 
 //data model for each particular person to be saved in the map
@@ -21,6 +22,7 @@ type Person struct {
   Password string
   EmailAddress string
 }
+
 var personTemp Person
 var manager PeopleManager
 
@@ -122,6 +124,7 @@ func isPersonExists(person string) (isExists bool) {
 func main() {
 
   //starting variables
+  r := mux.NewRouter()
   manager.peopleManager = make(map[string]*Person)
   //personTemp.UserName = ""
   /**
@@ -143,10 +146,10 @@ func main() {
             }
 
   manager.peopleManager["jojofabe123"] = person1
-  http.HandleFunc("/people", peopleHandler)
+  r.HandleFunc("/people", peopleHandler)
 
   //need to know how to handle this case here
-  http.HandleFunc("/{people:string}", personHandler)
+  r.HandleFunc("/{UserName}", personHandler)
 
   http.ListenAndServe(":8003", nil)
 }
