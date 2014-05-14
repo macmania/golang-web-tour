@@ -11,9 +11,12 @@ import (
   "io/ioutil"
   "encoding/json"
   "fmt"
+<<<<<<< HEAD
   "html/template"
   "log"
+=======
   "mux"
+>>>>>>> fc45cd4575a07b6813f9dc019c48cd3fbf74b1f8
 )
 
 type Context struct {
@@ -181,6 +184,7 @@ func main() {
             }
 
   manager.peopleManager["jojofabe123"] = person1
+<<<<<<< HEAD
   http.HandleFunc("/people", peopleHandler)
   http.HandleFunc("/", Index)
 
@@ -190,8 +194,8 @@ func main() {
   r.HandleFunc("/people", peopleHandler)
 
   //need to know how to handle this case here
-  http.HandleFunc("/{people:string}", personHandler)
   r.HandleFunc("/{UserName}", personHandler)
+>>>>>>> fc45cd4575a07b6813f9dc019c48cd3fbf74b1f8
 
   http.ListenAndServe(":8003", nil)
 }
