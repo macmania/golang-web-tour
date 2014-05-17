@@ -1,4 +1,32 @@
 {
-	"usernames":"jojofabe", 
-	"password":"xyzzz"
+    "jojofabe": 
+	{
+		"UserName":"jojofabe", 
+		"Name": "Mariel", 
+	    "Age": 20, 
+	    "Password":"xyzzz",
+	    "EmailAddress": "khattie03@yahoo.com" 
+	}, 
+ 
+
+
+    "jojofabe123123":
+    {    
+		"UserName":"jojofabe123123", 
+		"Name": "Mariel", 
+	    "Age": 26, 
+	    "Password":"xyzkjhkjijzz",
+	    "EmailAddress": "why@yahoo.com" 
+	}, 
+
+
+
+    "marie123123":
+    {    
+		"UserName":"marie123123", 
+		"Name": "Joueolla Fabe", 
+	    "Age": 36, 
+	    "Password":"xyzkjhkjijasdfakesjflaksdfzz",
+	    "EmailAddress": "why123@yahoo.com" 
+	}
 }

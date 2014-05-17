@@ -16,6 +16,12 @@ import (
   "github.com/gorilla/mux"
 )
 
+type Context struct {
+  Title string
+  Static string
+}
+
+const STATIC_URL = "/"
 //data model for each particular person to be saved in the map
 type Person struct {
   UserName string
@@ -43,7 +49,7 @@ func peopleHandler(w http.ResponseWriter, req *http.Request) {
       buf, _ := json.Marshal(&manager.peopleManager) //gets all of the objects in the collection
       w.Write(buf)
 
-    //curl -v -H "Content-Type: application/json" -X PUT --data "stuff.json" http://localhost:8003/ryanne
+    //curl -v -H "Content-Type: application/json" -X PUT --data @stuff.json http://localhost:8003/ryanne
     //this uploads
     case "PUT":
       buf, _ := ioutil.ReadAll(req.Body)
@@ -51,9 +57,9 @@ func peopleHandler(w http.ResponseWriter, req *http.Request) {
       printErr(err)
 
     case "DELETE":
-      buf, _ := ioutil.ReadAll(req.Body)
-      err := json.Unmarshal(buf, &manager.peopleManager)
-      printErr (err)
+      for k := range manager.peopleManager {
+        delete(manager.peopleManager, k)
+      }
 
     default:
       w.WriteHeader(400)
@@ -61,10 +67,12 @@ func peopleHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 //Handles each specific person that is in the peopleHandler using their username
+//works well in handling the cases
 func personHandler(w http.ResponseWriter, req *http.Request){
     vars := mux.Vars(req)
+    var err error
     person := vars["person"]
-    fmt.Println(category)
+    fmt.Println(person)
     exists := isPersonExists(person)
 
     switch req.Method{
@@ -78,12 +86,20 @@ func personHandler(w http.ResponseWriter, req *http.Request){
 
       case "PUT":
           buf, _ := ioutil.ReadAll(req.Body)
-          err := json.Unmarshal(buf, manager.peopleManager[person])
+          if !exists {
+              newPerson := new(Person)
+              err = json.Unmarshal(buf, newPerson)
+              manager.peopleManager[newPerson.UserName] = newPerson
+          } else {
+            err = json.Unmarshal(buf, manager.peopleManager[person])
+          }
           printErr(err)
 
       case "DELETE":
         if exists {
           delete(manager.peopleManager, person)
+        }else {
+          fmt.Print("Cannot find the person")
         }
 
       //Post appends and updates a resource
@@ -98,7 +114,6 @@ func personHandler(w http.ResponseWriter, req *http.Request){
 
       default:
         w.WriteHeader(400) //not found code
-
     }
 }
 
@@ -159,6 +174,7 @@ func main() {
                 Password: "somethingxyz",
                 EmailAddress: "jojofabe@gmail.com",
             }
+
 
   //starting point
   manager.peopleManager["jojofabe123"] = person1
