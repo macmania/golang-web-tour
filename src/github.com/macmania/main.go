@@ -16,13 +16,6 @@ import (
   "github.com/gorilla/mux"
 )
 
-type Context struct {
-    Title  string
-    Static string
-}
-
-const STATIC_URL = "/"
-
 //data model for each particular person to be saved in the map
 type Person struct {
   UserName string
@@ -32,6 +25,7 @@ type Person struct {
   EmailAddress string
 }
 
+//Temporary array model to save data variables
 var personTemp Person
 var manager PeopleManager
 
@@ -40,6 +34,7 @@ type PeopleManager struct {
   peopleManager map[string]*Person
 }
 
+/***Handler functions**/
 func peopleHandler(w http.ResponseWriter, req *http.Request) {
   fmt.Println(req.URL.Path[1:])
 
@@ -67,9 +62,11 @@ func peopleHandler(w http.ResponseWriter, req *http.Request) {
 
 //Handles each specific person that is in the peopleHandler using their username
 func personHandler(w http.ResponseWriter, req *http.Request){
-    exists := isPersonExists(req.URL.Path[1:])
-    var person string
-    person = req.URL.Path[1:]
+    vars := mux.Vars(req)
+    person := vars["person"]
+    fmt.Println(category)
+    exists := isPersonExists(person)
+
     switch req.Method{
       case "GET":
         if exists {
@@ -80,19 +77,13 @@ func personHandler(w http.ResponseWriter, req *http.Request){
         }
 
       case "PUT":
-          /*Need to test if this is ok*/
-        //if exists {
           buf, _ := ioutil.ReadAll(req.Body)
           err := json.Unmarshal(buf, manager.peopleManager[person])
           printErr(err)
-        //}
-/*        else { //creates a new person and add to the manager map
-          manager[&person]
-        }*/
 
       case "DELETE":
         if exists {
-          //delete the resource off the server
+          delete(manager.peopleManager, person)
         }
 
       //Post appends and updates a resource
@@ -132,6 +123,7 @@ func Index(w http.ResponseWriter, req *http.Request){
 
 
 //all credits go to http://www.reinbach.com/golang-webapps-1.html
+//still not working
 func render(w http.ResponseWriter, tmpl string, context Context) {
     context.Static = STATIC_URL
     //not working right now, still need to fix the memory location for this portion
@@ -174,7 +166,7 @@ func main() {
   r.HandleFunc("/home", Index)
 
   //need to know how to handle this case here, temporary solution for now
-  r.HandleFunc("/person/", personHandler)
+  r.HandleFunc("/{person}", personHandler)
 
   http.Handle("/", r)
   http.ListenAndServe(":8003", nil)
