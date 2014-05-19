@@ -14,6 +14,7 @@ import (
   "html/template"
   "log"
   "github.com/gorilla/mux"
+  "image"
 )
 
 type Context struct {
